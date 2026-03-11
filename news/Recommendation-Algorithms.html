@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Feed Between You and “We”: How Ranking Logic Can Stretch the Single Season</title>
+<meta name="description" content="A longform magazine-style analysis of whether engagement-optimized recommendation systems can influence how long users remain single by shaping exposure timing, intent signals, and pairing pathways.">
+<link rel="canonical" href="https://common-table.github.io/news/Recommendation-Algorithms.html">
+<style>
+  :root{
+    --paper:#fbfaf7;
+    --ink:#141414;
+    --muted:#5a5a5a;
+    --rule:#e6e1d8;
+    --accent:#7a3df0;
+    --accent2:#0b7a6b;
+    --note:#f3efe7;
+    --quote:#fff3cd;
+    --shadow: 0 18px 45px rgba(0,0,0,.08);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background: radial-gradient(1200px 700px at 20% 0%, rgba(122,61,240,.10), transparent 55%),
+                radial-gradient(900px 600px at 90% 10%, rgba(11,122,107,.10), transparent 55%),
+                var(--paper);
+    color:var(--ink);
+    font-family: ui-serif, Georgia, "Times New Roman", Times, serif;
+    line-height:1.72;
+  }
+  a{color:var(--accent2); text-decoration:none; border-bottom:1px solid rgba(11,122,107,.25)}
+  a:hover{border-bottom-color:rgba(11,122,107,.7)}
+  .mast{
+    position:sticky; top:0;
+    background:rgba(251,250,247,.9);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--rule);
+    z-index:3;
+  }
+  .wrap{max-width:1120px; margin:0 auto; padding:0 18px;}
+  .mastbar{
+    display:flex; align-items:flex-end; justify-content:space-between; gap:14px;
+    padding:16px 0 12px;
+  }
+  .brand{
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .brand .name{
+    font-family: ui-serif, Georgia, "Times New Roman", Times, serif;
+    font-weight:800;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    font-size:14px;
+  }
+  .brand .desk{
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    color:var(--muted);
+    font-size:12px;
+  }
+  header.hero{
+    padding:30px 0 10px;
+  }
+  .kicker{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+  .kicker:before{
+    content:"";
+    width:36px;
+    height:2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius:99px;
+    display:inline-block;
+  }
+  h1{
+    margin:10px 0 10px;
+    font-size:44px;
+    line-height:1.06;
+    letter-spacing:-.02em;
+  }
+  .dek{
+    max-width:74ch;
+    color:var(--muted);
+    font-size:18px;
+    margin:0 0 16px;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  }
+  .meta{
+    display:flex; flex-wrap:wrap; gap:10px 14px;
+    padding:14px 0 0;
+    border-top:1px solid var(--rule);
+    color:var(--muted);
+    font-size:12px;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  }
+  .meta .tag{
+    background:rgba(0,0,0,.03);
+    border:1px solid var(--rule);
+    border-radius:999px;
+    padding:6px 10px;
+  }
+
+  main{
+    padding:18px 0 44px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:18px;
+  }
+  .panel{
+    background:rgba(255,255,255,.75);
+    border:1px solid var(--rule);
+    border-radius:18px;
+    box-shadow: var(--shadow);
+    overflow:hidden;
+  }
+  .panel-inner{
+    padding:24px 22px;
+  }
+  .ruleline{
+    height:1px; background:var(--rule);
+    margin:18px 0;
+  }
+  .dropcap:first-letter{
+    float:left;
+    font-size:54px;
+    line-height:.9;
+    padding:10px 10px 0 0;
+    font-weight:800;
+    color:var(--accent);
+  }
+
+  .tldr{
+    background: linear-gradient(180deg, rgba(122,61,240,.08), rgba(11,122,107,.06));
+    border:1px solid rgba(122,61,240,.18);
+    border-radius:16px;
+    padding:16px 16px;
+    margin:16px 0 18px;
+  }
+  .tldr h2{
+    margin:0 0 8px;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    color:var(--ink);
+  }
+  .tldr ul{
+    margin:0;
+    padding-left:18px;
+  }
+  .tldr li{margin:7px 0}
+  .statnum{
+    font-weight:900;
+    color:var(--accent);
+    white-space:nowrap;
+  }
+
+  span{
+    background:var(--quote);
+    padding:3px 6px;
+    border-radius:8px;
+  }
+
+  h2.section{
+    margin:22px 0 10px;
+    font-size:20px;
+    letter-spacing:-.01em;
+  }
+  p{margin:14px 0}
+  .sidenote{
+    background: var(--note);
+    border:1px solid var(--rule);
+    border-radius:16px;
+    padding:14px 14px;
+    margin:16px 0;
+    color:var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    font-size:13px;
+  }
+  .sidenote strong{color:var(--accent2)}
+
+  .card{
+    background:rgba(255,255,255,.8);
+    border:1px solid var(--rule);
+    border-radius:16px;
+    padding:14px 14px;
+  }
+  .card .big{
+    font-size:28px;
+    font-weight:900;
+    color:var(--accent);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  }
+  .card .lbl{
+    margin-top:6px;
+    color:var(--muted);
+    font-size:12px;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  footer{
+    border-top:1px solid var(--rule);
+    padding:22px 0 30px;
+    color:var(--muted);
+    font-size:12px;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  }
+  .footrow{
+    display:flex; flex-wrap:wrap; gap:12px 18px; align-items:center; justify-content:space-between;
+  }
+
+  @media (min-width: 980px){
+    .grid{grid-template-columns: 1.25fr .75fr; align-items:start;}
+    .statcards{grid-template-columns: 1fr;}
+  }
+</style>
+</head>
+
+<body>
+  <div class="mast">
+    <div class="wrap mastbar">
+      <div class="brand">
+        <div class="name">Signal & Society</div>
+        <div class="desk">Longform reporting on digital systems shaping everyday life</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <header class="hero">
+      <div class="kicker">Technology • Relationships • Behavior</div>
+      <h1>The Feed Between You and “We”</h1>
+      <p class="dek">
+        Dating platforms don’t just show you people. They show you sequences, ranked opportunities shaped by engagement goals.
+        The emerging question: can those sequences nudge how long users remain single by tuning exposure timing and intent signals?
+      </p>
+      <div class="meta">
+        <span class="tag">Editorial Analysis</span>
+        <span class="tag">Recommendation Systems</span>
+        <span class="tag">Human Decision Pathways</span>
+      </div>
+    </header>
+
+    <main class="grid">
+      <article class="panel" id="analysis">
+<div class="panel-inner">
+
+  <p class="dropcap">
+    Recommendation systems are often described as simple personalization tools. They predict what a user might like and rank it higher. But in dating platforms, ranking is not just about preference. It shapes timing. It decides which profiles appear first, which appear later, and which patterns get repeated.
+  </p>
+
+  <p>
+    In a dating context, timing can matter as much as compatibility. Seeing a strong match early may encourage commitment. Seeing endless variety may encourage continued browsing. When ranking systems are optimized for engagement, they can naturally prioritize activity over exit. This is not necessarily intentional. It is a reflection of what the system is built to reward.
+  </p>
+
+  <h2 class="section">The feedback loop</h2>
+
+  <p>
+    One way researchers study this is through what is known as a Closed-loop feed exposure study. In this design, user behavior trains the model, the model shapes what is shown next, and that exposure influences the next action. Over time, the system can become very effective at keeping users active.
+  </p>
+
+  <p>
+    To avoid experimenting on real users, analysts often rely on synthetic dating-interest cohorts. These are simulated populations designed to mirror general preference patterns without involving real people. By adjusting ranking rules inside these simulated environments, researchers can observe how small exposure changes affect interaction pathways.
+  </p>
+
+  <h2 class="section">When timing changes outcomes</h2>
+
+  <p>
+    A delayed-match visibility experiment keeps the same pool of potential matches but changes the order in which they appear. High-compatibility profiles may be pushed further down the list, while more exploratory or attention-grabbing profiles appear first. Even when compatibility remains constant, the change in timing can influence how long users continue browsing before forming a stable connection.
+  </p>
+
+  <p>
+    Another research pattern is the relationship-intent signal suppression test. Here, signals that indicate seriousness or commitment are weighted less heavily in ranking decisions. The result is not the removal of serious profiles, but a shift in which types of profiles surface early. This can subtly reshape the path users take through the platform.
+  </p>
+
+  <p>
+    Analysts compare exposure-timing vs pairing-rate metrics to understand whether ordering alone affects how quickly users move toward stable interaction. If pairing slows while engagement remains high, it suggests that sequencing may be influencing behavior beyond compatibility.
+  </p>
+
+  <h2 class="section">Are systems extending the “single season”?</h2>
+
+  <p>
+    The question is not whether algorithms force anyone to stay single. Rather, it is whether engagement-focused ranking can extend the exploration phase. If a system consistently surfaces novelty before commitment-oriented profiles, users may spend more time browsing before settling into a relationship path.
+  </p>
+
+  <p>
+    Dating platforms do not control personal decisions. But they do control visibility. And visibility shapes perception. When the feed continuously suggests that something better might be one swipe away, the incentive to pause and commit can weaken.
+  </p>
+
+  <p>
+    The broader point is simple: ranking logic influences experience. In dating environments, experience influences timing. Whether that timing meaningfully changes relationship outcomes remains an open research question, but the design of exposure systems is clearly part of the conversation.
+  </p>
+
+</div>
+      </article>
+
+      <aside class="panel">
+        <div class="panel-inner">
+          <div class="sidenote">
+            <strong>How to read this:</strong> “Pairing” in this piece refers to moving from repeated browsing into a stable interaction path with intent to continue offline. The mechanism under review is ranking, how a system orders candidates, not compatibility alone.
+          </div>
+
+          <div class="sidenote" style="margin-top:16px">
+            <strong>Method notes:</strong> The piece references design patterns used in research: closed-loop exposure observation, synthetic cohort construction, delayed visibility testing, intent-signal suppression checks, and exposure-timing versus pairing-rate comparisons.
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <div class="footrow wrap">
+        <div>© Signal &amp; Society ,  Editorial desk</div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
